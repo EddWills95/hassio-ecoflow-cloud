@@ -7,6 +7,7 @@
 - Cumulative Energy Discharge (Wh) (`accuDsgEnergy`)
 - Charge Remaining Time (`bmsChgRemTime`)   _(disabled)_
 - Discharge Remaining Time (`bmsDsgRemTime`)   _(disabled)_
+- Stored Energy (`storedEnergy_cmsBattFullEnergy`)
 - Max Charge Level (`cmsMaxChgSoc`)
 - Min Discharge Level (`cmsMinDsgSoc`)
 - Cycles (`cycles`)
@@ -64,5 +65,8 @@
 
 *Sliders (numbers)*
 - Backup Reserve Level (`backupReverseSoc` -> `{"sn": "SN", "cmdId": 17, "cmdFunc": 254, "dirDest": 1, "dirSrc": 1, "dest": 2, "needAck": true, "params": {"cfgBackupReverseSoc": "VALUE"}}` [3 - 95])
+- Max Charge Level (`cmsMaxChgSoc` -> `{"sn": "SN", "cmdId": 17, "cmdFunc": 254, "dirDest": 1, "dirSrc": 1, "dest": 2, "needAck": true, "params": {"cfgMaxChgSoc": "VALUE"}}` [5 - 100])
+- Min Discharge Level (`cmsMinDsgSoc` -> `{"sn": "SN", "cmdId": 17, "cmdFunc": 254, "dirDest": 1, "dirSrc": 1, "dest": 2, "needAck": true, "params": {"cfgMinDsgSoc": "VALUE"}}` [0 - 30])
+- Feed-in Power Limit (`feedGridModePowLimit` -> `{"sn": "SN", "cmdId": 17, "cmdFunc": 254, "dirDest": 1, "dirSrc": 1, "dest": 2, "needAck": true, "params": {"cfgFeedGridModePowLimit": "VALUE"}}` [0 - 800])
 
 

@@ -309,6 +309,68 @@ from Home Assistant.
 
 </p></details>
 
+<details><summary> DELTA_3_MAX_PLUS <i>(sensors: 32, switches: 8, sliders: 4, selects: 5)</i> </summary>
+<p>
+
+*Sensors*
+- Main Battery Level
+- Main Design Capacity  _(disabled)_
+- Main Full Capacity  _(disabled)_
+- Main Remain Capacity  _(disabled)_
+- State of Health
+- Battery Level
+- Battery Charging State
+- Total In Power (energy:  _[Device Name]_ Total In  Energy)
+- Total Out Power (energy:  _[Device Name]_ Total Out  Energy)
+- Solar In Power
+- Solar In Current
+- AC In Power
+- AC Out Power
+- AC In Volts
+- AC Out Volts
+- DC Out Power
+- Type-C (1) Out Power
+- USB QC (1) Out Power
+- USB QC (2) Out Power
+- Charge Remaining Time
+- Discharge Remaining Time
+- Remaining Time
+- PCS DC Temperature
+- PCS AC Temperature
+- Battery Temperature
+- Max Cell Temperature  _(disabled)_
+- Battery Volts  _(disabled)_
+- Min Cell Volts  _(disabled)_
+- Max Cell Volts  _(disabled)_
+- Cycles
+- Solar In Energy
+- Status
+
+*Switches*
+- Beeper
+- AC Enabled
+- X-Boost Enabled
+- DC (12V) Enabled
+- USB Enabled
+- AC Always On
+- Backup Reserve Enabled
+- Grid Bypass
+
+*Sliders (numbers)*
+- Max Charge Level
+- Min Discharge Level
+- AC Charging Power
+- Backup Reserve Level
+
+*Selects*
+- DC (12V) Charge Current
+- Screen Timeout
+- Unit Timeout
+- AC Timeout
+- DC (12V) Timeout
+
+</p></details>
+
 <details><summary> RIVER_2 <i>(sensors: 32, switches: 5, sliders: 4, selects: 5)</i> </summary>
 <p>
 
@@ -1495,7 +1557,7 @@ from Home Assistant.
 
 </p></details>
 
-<details><summary> STREAM_AC <i>(sensors: 39)</i> </summary>
+<details><summary> STREAM_AC <i>(sensors: 40, sliders: 4)</i> </summary>
 <p>
 
 *Sensors*
@@ -1505,6 +1567,7 @@ from Home Assistant.
 - Cumulative Energy Discharge (Wh)  _(disabled)_
 - Charge Remaining Time  _(disabled)_
 - Discharge Remaining Time  _(disabled)_
+- Stored Energy
 - Cycles  _(disabled)_
 - Design Capacity  _(disabled)_
 - Power Battery SOC  _(disabled)_
@@ -1538,10 +1601,16 @@ from Home Assistant.
 - Power AC SYS  _(disabled)_
 - Battery Temperature  _(disabled)_
 - Battery Volts  _(disabled)_
+
+*Sliders (numbers)*
+- Max Charge Level
+- Min Discharge Level
+- Feed-in Power Limit
+- Grid Charge Power Limit
 
 </p></details>
 
-<details><summary> STREAM_PRO <i>(sensors: 39)</i> </summary>
+<details><summary> STREAM_PRO <i>(sensors: 40, sliders: 4)</i> </summary>
 <p>
 
 *Sensors*
@@ -1551,6 +1620,7 @@ from Home Assistant.
 - Cumulative Energy Discharge (Wh)  _(disabled)_
 - Charge Remaining Time  _(disabled)_
 - Discharge Remaining Time  _(disabled)_
+- Stored Energy
 - Cycles  _(disabled)_
 - Design Capacity  _(disabled)_
 - Power Battery SOC  _(disabled)_
@@ -1584,10 +1654,16 @@ from Home Assistant.
 - Power AC SYS  _(disabled)_
 - Battery Temperature  _(disabled)_
 - Battery Volts  _(disabled)_
+
+*Sliders (numbers)*
+- Max Charge Level
+- Min Discharge Level
+- Feed-in Power Limit
+- Grid Charge Power Limit
 
 </p></details>
 
-<details><summary> STREAM_ULTRA <i>(sensors: 39)</i> </summary>
+<details><summary> STREAM_ULTRA <i>(sensors: 40, sliders: 4)</i> </summary>
 <p>
 
 *Sensors*
@@ -1597,6 +1673,7 @@ from Home Assistant.
 - Cumulative Energy Discharge (Wh)  _(disabled)_
 - Charge Remaining Time  _(disabled)_
 - Discharge Remaining Time  _(disabled)_
+- Stored Energy
 - Cycles  _(disabled)_
 - Design Capacity  _(disabled)_
 - Power Battery SOC  _(disabled)_
@@ -1630,6 +1707,12 @@ from Home Assistant.
 - Power AC SYS  _(disabled)_
 - Battery Temperature  _(disabled)_
 - Battery Volts  _(disabled)_
+
+*Sliders (numbers)*
+- Max Charge Level
+- Min Discharge Level
+- Feed-in Power Limit
+- Grid Charge Power Limit
 
 </p></details>
 
@@ -2344,6 +2427,43 @@ from Home Assistant.
 
 </p></details>
 
+<details><summary> DELTA 3 Max Plus (API) <i>(sensors: 16, switches: 7, sliders: 3)</i> </summary>
+<p>
+
+*Sensors*
+- Main Battery Level
+- Battery Charging State
+- Total In Power (energy:  _[Device Name]_ Total In  Energy)
+- Total Out Power (energy:  _[Device Name]_ Total Out  Energy)
+- AC In Power
+- Solar In Power
+- Solar 2 In Power
+- DC Out Power
+- Type-C (1) Out Power
+- Type-C (2) Out Power
+- Type-C (3) Out Power
+- USB QC (1) Out Power
+- USB QC (2) Out Power
+- Charge Remaining Time
+- Discharge Remaining Time
+- Status (Scheduled)
+
+*Switches*
+- AC Output
+- AC2 Output
+- DC Output
+- X-Boost Enabled
+- Beeper
+- Backup Reserve Enabled
+- Bypass Output Disabled
+
+*Sliders (numbers)*
+- Max Charge Level
+- Min Discharge Level
+- Backup Reserve Level
+
+</p></details>
+
 <details><summary> Power Kits (API) <i>(sensors: 161, switches: 10, sliders: 1)</i> </summary>
 <p>
 
@@ -2600,7 +2720,7 @@ from Home Assistant.
 
 </p></details>
 
-<details><summary> Stream AC (API) <i>(sensors: 53, switches: 5, sliders: 1)</i> </summary>
+<details><summary> Stream AC (API) <i>(sensors: 54, switches: 5, sliders: 4)</i> </summary>
 <p>
 
 *Sensors*
@@ -2610,6 +2730,7 @@ from Home Assistant.
 - Cumulative Energy Discharge (Wh)
 - Charge Remaining Time  _(disabled)_
 - Discharge Remaining Time  _(disabled)_
+- Stored Energy
 - Max Charge Level
 - Min Discharge Level
 - Cycles
@@ -2667,10 +2788,13 @@ from Home Assistant.
 
 *Sliders (numbers)*
 - Backup Reserve Level
+- Max Charge Level
+- Min Discharge Level
+- Feed-in Power Limit
 
 </p></details>
 
-<details><summary> Stream PRO (API) <i>(sensors: 53, switches: 5, sliders: 1)</i> </summary>
+<details><summary> Stream PRO (API) <i>(sensors: 54, switches: 5, sliders: 4)</i> </summary>
 <p>
 
 *Sensors*
@@ -2680,6 +2804,7 @@ from Home Assistant.
 - Cumulative Energy Discharge (Wh)
 - Charge Remaining Time  _(disabled)_
 - Discharge Remaining Time  _(disabled)_
+- Stored Energy
 - Max Charge Level
 - Min Discharge Level
 - Cycles
@@ -2737,10 +2862,13 @@ from Home Assistant.
 
 *Sliders (numbers)*
 - Backup Reserve Level
+- Max Charge Level
+- Min Discharge Level
+- Feed-in Power Limit
 
 </p></details>
 
-<details><summary> Stream Ultra (API) <i>(sensors: 53, switches: 5, sliders: 1)</i> </summary>
+<details><summary> Stream Ultra (API) <i>(sensors: 54, switches: 5, sliders: 4)</i> </summary>
 <p>
 
 *Sensors*
@@ -2750,6 +2878,7 @@ from Home Assistant.
 - Cumulative Energy Discharge (Wh)
 - Charge Remaining Time  _(disabled)_
 - Discharge Remaining Time  _(disabled)_
+- Stored Energy
 - Max Charge Level
 - Min Discharge Level
 - Cycles
@@ -2807,6 +2936,9 @@ from Home Assistant.
 
 *Sliders (numbers)*
 - Backup Reserve Level
+- Max Charge Level
+- Min Discharge Level
+- Feed-in Power Limit
 
 </p></details>
 
@@ -2987,3 +3119,4 @@ from Home Assistant.
 - Status
 
 </p></details>
+

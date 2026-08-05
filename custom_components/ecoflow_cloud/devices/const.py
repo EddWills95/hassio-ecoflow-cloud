@@ -373,6 +373,8 @@ STREAM_STR_OUT_POWER = "Out Power %s"
 STREAM_OPERATION_MODE_SELF_POWERED = "Operating mode - Self-powered"
 STREAM_OPERATION_MODE_AI_MODE = "Operating mode - AI Mode"
 STREAM_FEED_IN_CONTROL = "Feed-in control"
+STREAM_FEED_IN_POWER_LIMIT = "Feed-in Power Limit"
+STREAM_GRID_CHARGE_POWER_LIMIT = "Grid Charge Power Limit"
 
 ACCU_CHARGE_CAP = "Cumulative Capacity Charge (mAh)"
 ACCU_CHARGE_ENERGY = "Cumulative Energy Charge (Wh)"

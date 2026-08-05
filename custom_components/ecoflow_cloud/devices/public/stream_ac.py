@@ -8,7 +8,12 @@ from homeassistant.components.switch import SwitchEntity
 from custom_components.ecoflow_cloud.api import EcoflowApiClient
 from custom_components.ecoflow_cloud.devices import BaseDevice, const
 from custom_components.ecoflow_cloud.devices.public.data_bridge import to_plain
-from custom_components.ecoflow_cloud.number import BatteryBackupLevel
+from custom_components.ecoflow_cloud.number import (
+    BatteryBackupLevel,
+    ChargingPowerEntity,
+    MaxBatteryLevelEntity,
+    MinBatteryLevelEntity,
+)
 from custom_components.ecoflow_cloud.sensor import (
     AmpSensorEntity,
     BatteryLimitSensorEntity,
@@ -336,6 +341,69 @@ class StreamAC(BaseDevice):
                     "needAck": True,
                     "params": {
                         "cfgBackupReverseSoc": int(value),
+                    },
+                },
+            ),
+            # When AI mode (operateIntelligentScheduleModeOpen) is active, writes are
+            # ACK'd but immediately reverted by EcoFlow cloud. Disable AI mode (enable
+            # self-powered mode) before writes will persist.
+            MaxBatteryLevelEntity(
+                client,
+                self,
+                "cmsMaxChgSoc",
+                const.MAX_CHARGE_LEVEL,
+                5,
+                100,
+                lambda value: {
+                    "sn": self.device_info.sn,
+                    "cmdId": 17,
+                    "cmdFunc": 254,
+                    "dirDest": 1,
+                    "dirSrc": 1,
+                    "dest": 2,
+                    "needAck": True,
+                    "params": {
+                        "cfgMaxChgSoc": int(value),
+                    },
+                },
+            ),
+            MinBatteryLevelEntity(
+                client,
+                self,
+                "cmsMinDsgSoc",
+                const.MIN_DISCHARGE_LEVEL,
+                0,
+                30,
+                lambda value: {
+                    "sn": self.device_info.sn,
+                    "cmdId": 17,
+                    "cmdFunc": 254,
+                    "dirDest": 1,
+                    "dirSrc": 1,
+                    "dest": 2,
+                    "needAck": True,
+                    "params": {
+                        "cfgMinDsgSoc": int(value),
+                    },
+                },
+            ),
+            ChargingPowerEntity(
+                client,
+                self,
+                "feedGridModePowLimit",
+                const.STREAM_FEED_IN_POWER_LIMIT,
+                0,
+                800,
+                lambda value: {
+                    "sn": self.device_info.sn,
+                    "cmdId": 17,
+                    "cmdFunc": 254,
+                    "dirDest": 1,
+                    "dirSrc": 1,
+                    "dest": 2,
+                    "needAck": True,
+                    "params": {
+                        "cfgFeedGridModePowLimit": int(value),
                     },
                 },
             ),

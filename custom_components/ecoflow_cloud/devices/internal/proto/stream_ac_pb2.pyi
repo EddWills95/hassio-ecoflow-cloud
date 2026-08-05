@@ -333,3 +333,17 @@ class StreamACChamp_cmd21(_message.Message):
     CHAMP_CMD21_CHAMP_CMD21_2_FIELD_NUMBER: _ClassVar[int]
     Champ_cmd21_champ_cmd21_2: StreamACChamp_cmd21_2
     def __init__(self, Champ_cmd21_champ_cmd21_2: _Optional[_Union[StreamACChamp_cmd21_2, _Mapping]] = ...) -> None: ...
+
+class StreamACConfigWrite(_message.Message):
+    __slots__ = ("cfg_utc_time", "cms_max_chg_soc", "cms_min_dsg_soc", "feed_grid_mode_pow_limit", "sys_grid_in_pwr_limit")
+    CFG_UTC_TIME_FIELD_NUMBER: _ClassVar[int]
+    CMS_MAX_CHG_SOC_FIELD_NUMBER: _ClassVar[int]
+    CMS_MIN_DSG_SOC_FIELD_NUMBER: _ClassVar[int]
+    FEED_GRID_MODE_POW_LIMIT_FIELD_NUMBER: _ClassVar[int]
+    SYS_GRID_IN_PWR_LIMIT_FIELD_NUMBER: _ClassVar[int]
+    cfg_utc_time: int
+    cms_max_chg_soc: int
+    cms_min_dsg_soc: int
+    feed_grid_mode_pow_limit: int
+    sys_grid_in_pwr_limit: int
+    def __init__(self, cfg_utc_time: _Optional[int] = ..., cms_max_chg_soc: _Optional[int] = ..., cms_min_dsg_soc: _Optional[int] = ..., feed_grid_mode_pow_limit: _Optional[int] = ..., sys_grid_in_pwr_limit: _Optional[int] = ...) -> None: ...

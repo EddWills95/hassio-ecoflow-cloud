@@ -2,6 +2,7 @@ from typing import override
 from typing import Any
 import logging
 
+from google.protobuf.json_format import MessageToDict
 from homeassistant.components.number import NumberEntity
 from homeassistant.components.select import SelectEntity
 from homeassistant.components.sensor import SensorEntity
@@ -9,7 +10,14 @@ from homeassistant.components.switch import SwitchEntity
 from homeassistant.util import utcnow
 
 from custom_components.ecoflow_cloud.api import EcoflowApiClient
+from custom_components.ecoflow_cloud.api.message import Message, PrivateAPIMessageProtocol
 from custom_components.ecoflow_cloud.devices import BaseInternalDevice, const
+from custom_components.ecoflow_cloud.devices.internal.proto import stream_ac_pb2
+from custom_components.ecoflow_cloud.number import (
+    ChargingPowerEntity,
+    MaxBatteryLevelEntity,
+    MinBatteryLevelEntity,
+)
 from custom_components.ecoflow_cloud.sensor import (
     CapacitySensorEntity,
     CumulativeCapacitySensorEntity,
@@ -27,6 +35,72 @@ from custom_components.ecoflow_cloud.sensor import (
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+
+class StreamACCommandMessage(PrivateAPIMessageProtocol):
+    """Message wrapper for STREAM AC protobuf SET commands."""
+
+    def __init__(
+        self,
+        payload: stream_ac_pb2.StreamACConfigWrite,
+        packet: stream_ac_pb2.StreamACSendHeaderMsg,
+    ):
+        self._packet = packet
+        self._payload = payload
+
+    @override
+    def to_mqtt_payload(self):
+        return self._packet.SerializeToString()
+
+    @override
+    def to_dict(self) -> dict:
+        payload_dict = MessageToDict(self._payload, preserving_proto_field_name=True)
+        result = MessageToDict(self._packet, preserving_proto_field_name=True)
+        result["msg"]["pdata"] = payload_dict
+        return {type(self._packet).__name__: result}
+
+
+def _create_stream_ac_proto_command(field_name: str, value: int, device_sn: str):
+    """Create a protobuf SET command for STREAM AC (cmdFunc=254, cmdId=17).
+
+    Field numbers 33/34 (cms_max_chg_soc/cms_min_dsg_soc), 169
+    (feed_grid_mode_pow_limit, export ceiling) and 579
+    (sys_grid_in_pwr_limit, grid-charge ceiling) are all hardware-verified
+    with live ACKs against a real STREAM AC Pro via the app-broker protobuf
+    path in the sibling ecoflow-mqtt-listener repo's ecoflow_control.py
+    (2026-07-27, reconfirmed 2026-08-04). This integration uses a different
+    broker/credential path than that script (private API vs. the app's own
+    email/password broker) — the protobuf envelope and field numbers are
+    confirmed, but end-to-end delivery through *this* integration's broker
+    connection has not yet been confirmed on real HAOSS (see increment-1
+    notes: blocked on Docker networking during dev, real-HAOSS test pending).
+    """
+    payload = stream_ac_pb2.StreamACConfigWrite()
+    try:
+        setattr(payload, field_name, int(value))
+    except AttributeError:
+        _LOGGER.error("Unknown StreamAC set field: %s", field_name)
+        return None
+
+    pdata = payload.SerializeToString()
+
+    packet = stream_ac_pb2.StreamACSendHeaderMsg()
+    packet.msg.src = 32
+    packet.msg.dest = 2
+    packet.msg.d_src = 1
+    packet.msg.d_dest = 1
+    packet.msg.cmd_func = 254
+    packet.msg.cmd_id = 17
+    packet.msg.need_ack = 1
+    packet.msg.seq = Message.gen_seq()
+    packet.msg.product_id = 56
+    packet.msg.version = 19
+    packet.msg.payload_ver = 1
+    packet.msg.device_sn = device_sn
+    packet.msg.data_len = len(pdata)
+    packet.msg.pdata = pdata
+
+    return StreamACCommandMessage(payload, packet)
 
 
 class StreamAC(BaseInternalDevice):
@@ -288,7 +362,66 @@ class StreamAC(BaseInternalDevice):
 
     # moduleWifiRssi
     def numbers(self, client: EcoflowApiClient) -> list[NumberEntity]:
-        return []
+        device = self
+        return [
+            # When AI mode (operateIntelligentScheduleModeOpen) is active, writes are
+            # ACK'd but immediately reverted by EcoFlow cloud. Disable AI mode (enable
+            # self-powered mode) before writes will persist. NOTE: current-value
+            # read-back for cmsMaxChgSoc/cmsMinDsgSoc/feedGridModePowLimit is not yet
+            # wired into this device's protobuf telemetry decode (see sensors() above,
+            # where these fields are only commented placeholders), so these entities
+            # may show as unavailable until read support is added separately.
+            MaxBatteryLevelEntity(
+                client,
+                self,
+                "cmsMaxChgSoc",
+                const.MAX_CHARGE_LEVEL,
+                5,
+                100,
+                lambda value: _create_stream_ac_proto_command(
+                    "cms_max_chg_soc", int(value), device.device_data.sn
+                ),
+            ),
+            MinBatteryLevelEntity(
+                client,
+                self,
+                "cmsMinDsgSoc",
+                const.MIN_DISCHARGE_LEVEL,
+                0,
+                30,
+                lambda value: _create_stream_ac_proto_command(
+                    "cms_min_dsg_soc", int(value), device.device_data.sn
+                ),
+            ),
+            ChargingPowerEntity(
+                client,
+                self,
+                "feedGridModePowLimit",
+                const.STREAM_FEED_IN_POWER_LIMIT,
+                0,
+                800,
+                lambda value: _create_stream_ac_proto_command(
+                    "feed_grid_mode_pow_limit", int(value), device.device_data.sn
+                ),
+            ),
+            # Real hardware ceiling is the device's own powSysAcInMax (2100W on
+            # the AC Pro unit this was verified against) rather than a fixed
+            # constant across all STREAM AC models/regions — the device itself
+            # does not validate against it (accepts and stores values above
+            # powSysAcInMax without error), so 4462 is used here as a
+            # deliberately permissive upper bound rather than a true cap.
+            ChargingPowerEntity(
+                client,
+                self,
+                "sysGridInPwrLimit",
+                const.STREAM_GRID_CHARGE_POWER_LIMIT,
+                0,
+                4462,
+                lambda value: _create_stream_ac_proto_command(
+                    "sys_grid_in_pwr_limit", int(value), device.device_data.sn
+                ),
+            ),
+        ]
 
     def switches(self, client: EcoflowApiClient) -> list[SwitchEntity]:
         return []

@@ -178,3 +178,21 @@ message StreamACChamp_cmd21_2 {
 message StreamACChamp_cmd21 {
     optional StreamACChamp_cmd21_2 Champ_cmd21_champ_cmd21_2 = 1;
 }
+
+// SET command payload (cmdFunc=254, cmdId=17). Field numbers 33/34 match the
+// actionId values confirmed in the JSON SET ACK on the Open Platform broker
+// (e.g. {"configOk": true, "cfgMaxChgSoc": 85, "actionId": 33}), and align
+// with the same field numbers used for the equivalent DELTA 3 fields
+// (see ef_delta3.proto). Fields 169 (feed_grid_mode_pow_limit, export ceiling,
+// 0-800W) and 579 (sys_grid_in_pwr_limit, grid-charge ceiling, 0-powSysAcInMax)
+// are both hardware-verified with live ACKs via the app-broker protobuf path
+// in ../../../../../../ecoflow-mqtt-listener/ecoflow_control.py (2026-07-27,
+// reconfirmed 2026-08-04) — both persist through AI/Intelligent-Schedule mode,
+// unlike cms_max_chg_soc/cms_min_dsg_soc which AI mode actively reverts.
+message StreamACConfigWrite {
+    optional uint32 cfg_utc_time = 6;
+    optional uint32 cms_max_chg_soc = 33;
+    optional uint32 cms_min_dsg_soc = 34;
+    optional uint32 feed_grid_mode_pow_limit = 169;
+    optional uint32 sys_grid_in_pwr_limit = 579;
+}
