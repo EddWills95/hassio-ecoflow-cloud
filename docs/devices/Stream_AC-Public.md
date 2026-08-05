@@ -68,5 +68,6 @@
 - Max Charge Level (`cmsMaxChgSoc` -> `{"sn": "SN", "cmdId": 17, "cmdFunc": 254, "dirDest": 1, "dirSrc": 1, "dest": 2, "needAck": true, "params": {"cfgMaxChgSoc": "VALUE"}}` [5 - 100])
 - Min Discharge Level (`cmsMinDsgSoc` -> `{"sn": "SN", "cmdId": 17, "cmdFunc": 254, "dirDest": 1, "dirSrc": 1, "dest": 2, "needAck": true, "params": {"cfgMinDsgSoc": "VALUE"}}` [0 - 30])
 - Feed-in Power Limit (`feedGridModePowLimit` -> `{"sn": "SN", "cmdId": 17, "cmdFunc": 254, "dirDest": 1, "dirSrc": 1, "dest": 2, "needAck": true, "params": {"cfgFeedGridModePowLimit": "VALUE"}}` [0 - 800])
+- Grid Charge Power Limit (`sysGridInPwrLimit` -> `{"sn": "SN", "cmdId": 17, "cmdFunc": 254, "dirDest": 1, "dirSrc": 1, "dest": 2, "needAck": true, "params": {"cfgSysGridInPwrLimit": "VALUE"}}` [0 - 4462])
 
 

@@ -407,6 +407,35 @@ class StreamAC(BaseDevice):
                     },
                 },
             ),
+            # Grid-charge (charge-from-grid) power ceiling — the charge-side mirror
+            # of feedGridModePowLimit above. Read key is `sysGridInPwrLimit` (no
+            # cms/other prefix); write key follows this integration's confirmed
+            # naming convention of adding a `cfg` prefix to the read key
+            # (see cfgMaxChgSoc/cfgMinDsgSoc/cfgFeedGridModePowLimit above, all
+            # confirmed live). Real hardware ceiling is the device's own
+            # powSysAcInMax (2100W on this AC Pro) rather than a fixed constant —
+            # the device accepts/stores values above it without validation, so
+            # 4462 here is a deliberately permissive upper bound, not a true cap.
+            ChargingPowerEntity(
+                client,
+                self,
+                "sysGridInPwrLimit",
+                const.STREAM_GRID_CHARGE_POWER_LIMIT,
+                0,
+                4462,
+                lambda value: {
+                    "sn": self.device_info.sn,
+                    "cmdId": 17,
+                    "cmdFunc": 254,
+                    "dirDest": 1,
+                    "dirSrc": 1,
+                    "dest": 2,
+                    "needAck": True,
+                    "params": {
+                        "cfgSysGridInPwrLimit": int(value),
+                    },
+                },
+            ),
         ]
 
     def switches(self, client: EcoflowApiClient) -> list[SwitchEntity]:

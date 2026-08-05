@@ -2720,7 +2720,7 @@ from Home Assistant.
 
 </p></details>
 
-<details><summary> Stream AC (API) <i>(sensors: 54, switches: 5, sliders: 4)</i> </summary>
+<details><summary> Stream AC (API) <i>(sensors: 54, switches: 5, sliders: 5)</i> </summary>
 <p>
 
 *Sensors*
@@ -2791,10 +2791,11 @@ from Home Assistant.
 - Max Charge Level
 - Min Discharge Level
 - Feed-in Power Limit
+- Grid Charge Power Limit
 
 </p></details>
 
-<details><summary> Stream PRO (API) <i>(sensors: 54, switches: 5, sliders: 4)</i> </summary>
+<details><summary> Stream PRO (API) <i>(sensors: 54, switches: 5, sliders: 5)</i> </summary>
 <p>
 
 *Sensors*
@@ -2865,10 +2866,11 @@ from Home Assistant.
 - Max Charge Level
 - Min Discharge Level
 - Feed-in Power Limit
+- Grid Charge Power Limit
 
 </p></details>
 
-<details><summary> Stream Ultra (API) <i>(sensors: 54, switches: 5, sliders: 4)</i> </summary>
+<details><summary> Stream Ultra (API) <i>(sensors: 54, switches: 5, sliders: 5)</i> </summary>
 <p>
 
 *Sensors*
@@ -2939,6 +2941,7 @@ from Home Assistant.
 - Max Charge Level
 - Min Discharge Level
 - Feed-in Power Limit
+- Grid Charge Power Limit
 
 </p></details>
 
