@@ -407,35 +407,20 @@ class StreamAC(BaseDevice):
                     },
                 },
             ),
-            # Grid-charge (charge-from-grid) power ceiling — the charge-side mirror
-            # of feedGridModePowLimit above. Read key is `sysGridInPwrLimit` (no
-            # cms/other prefix); write key follows this integration's confirmed
-            # naming convention of adding a `cfg` prefix to the read key
-            # (see cfgMaxChgSoc/cfgMinDsgSoc/cfgFeedGridModePowLimit above, all
-            # confirmed live). Real hardware ceiling is the device's own
-            # powSysAcInMax (2100W on this AC Pro) rather than a fixed constant —
-            # the device accepts/stores values above it without validation, so
-            # 4462 here is a deliberately permissive upper bound, not a true cap.
-            ChargingPowerEntity(
-                client,
-                self,
-                "sysGridInPwrLimit",
-                const.STREAM_GRID_CHARGE_POWER_LIMIT,
-                0,
-                4462,
-                lambda value: {
-                    "sn": self.device_info.sn,
-                    "cmdId": 17,
-                    "cmdFunc": 254,
-                    "dirDest": 1,
-                    "dirSrc": 1,
-                    "dest": 2,
-                    "needAck": True,
-                    "params": {
-                        "cfgSysGridInPwrLimit": int(value),
-                    },
-                },
-            ),
+            # NOTE: grid-charge-limit (sysGridInPwrLimit / cfgSysGridInPwrLimit,
+            # field 579) deliberately NOT added here. Tested live 2026-08-05: the
+            # Open Platform broker's /set topic returns a fake success ACK
+            # ({"configOk": true, "actionId": 579}) for this field WITHOUT
+            # actually changing the device — confirmed by independent quota
+            # readback showing the value unchanged. This is a genuine, silent
+            # false-positive from EcoFlow's cloud, distinct from the other
+            # entities above (max/min SOC, feed-in limit), which were each
+            # independently confirmed to produce a real device-side change on
+            # this exact broker/path. The field IS real and controllable — but
+            # only via the private/app-credential broker's protobuf path (see
+            # devices/internal/stream_ac.py), not this public-API JSON path.
+            # Shipping a control that silently no-ops would be worse than
+            # omitting it.
         ]
 
     def switches(self, client: EcoflowApiClient) -> list[SwitchEntity]:

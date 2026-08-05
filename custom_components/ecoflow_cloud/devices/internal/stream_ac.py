@@ -68,12 +68,19 @@ def _create_stream_ac_proto_command(field_name: str, value: int, device_sn: str)
     (sys_grid_in_pwr_limit, grid-charge ceiling) are all hardware-verified
     with live ACKs against a real STREAM AC Pro via the app-broker protobuf
     path in the sibling ecoflow-mqtt-listener repo's ecoflow_control.py
-    (2026-07-27, reconfirmed 2026-08-04). This integration uses a different
-    broker/credential path than that script (private API vs. the app's own
-    email/password broker) — the protobuf envelope and field numbers are
-    confirmed, but end-to-end delivery through *this* integration's broker
-    connection has not yet been confirmed on real HAOSS (see increment-1
-    notes: blocked on Docker networking during dev, real-HAOSS test pending).
+    (2026-07-27, reconfirmed 2026-08-04/05).
+
+    IMPORTANT (found 2026-08-05): field 579 is confirmed to ONLY work via
+    this private/app-credential broker path. The *other* public-API JSON
+    path (devices/public/stream_ac.py, api-e.ecoflow.com /
+    mqtt-e.ecoflow.com) returns a fake success ACK for this field
+    (`{"configOk": true, "actionId": 579}`) without actually changing the
+    device — confirmed by independent quota readback showing no change.
+    So a deployment using public-API credentials (the common case — see
+    the real account this was tested against) must use THIS device class
+    for the grid-charge-limit entity to actually work; 33/34/169 were
+    separately confirmed to work correctly on the public-API path too, so
+    those are intentionally present on both device classes.
     """
     payload = stream_ac_pb2.StreamACConfigWrite()
     try:
